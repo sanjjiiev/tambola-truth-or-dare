@@ -1,26 +1,76 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root { color-scheme: light; }
+html, body { height: 100%; }
+body { @apply bg-cream text-slate-800 antialiased; }
+
+/* ---------- Horror / eerie animations ---------- */
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; text-shadow: 0 0 18px rgba(176,3,27,.85); }
+  20%, 24%, 55% { opacity: .35; text-shadow: none; }
+}
+.animate-flicker { animation: flicker 4s infinite; }
+
+@keyframes shakeIn {
+  0% { transform: scale(.85) translateY(12px); opacity: 0; }
+  40% { transform: scale(1.03) translateX(-5px); opacity: 1; }
+  50% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  100% { transform: scale(1) translateX(0); }
+}
+.animate-shake-in { animation: shakeIn .6s cubic-bezier(.2,.9,.3,1.3) both; }
+
+@keyframes drift {
+  0% { transform: translate3d(-4%, 0, 0) scale(1.15); }
+  50% { transform: translate3d(4%, -2%, 0) scale(1.25); }
+  100% { transform: translate3d(-4%, 0, 0) scale(1.15); }
+}
+.animate-drift { animation: drift 26s ease-in-out infinite; }
+
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(176,3,27,.55); }
+  70% { box-shadow: 0 0 0 18px rgba(176,3,27,0); }
+  100% { box-shadow: 0 0 0 0 rgba(176,3,27,0); }
+}
+.animate-pulse-ring { animation: pulseRing 1.8s infinite; }
+
+@keyframes popNumber {
+  0% { transform: scale(.4); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.animate-pop { animation: popNumber .45s cubic-bezier(.2,.9,.3,1.4) both; }
+
+/* Eerie vignette + mist for the Tambola phase */
+.eerie-bg {
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(124,185,232,.10), transparent 60%),
+    radial-gradient(90% 70% at 50% 110%, rgba(176,3,27,.14), transparent 65%),
+    linear-gradient(180deg, #322C40 0%, #2A2436 55%, #201B2B 100%);
+}
+.eerie-bg::after {
+  content: "";
+  position: fixed; inset: -20%;
+  background: radial-gradient(closest-side, rgba(255,255,255,.06), transparent 70%);
+  pointer-events: none;
+  animation: drift 26s ease-in-out infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Horror punishment background */
+.horror-bg {
+  background:
+    radial-gradient(80% 60% at 50% 100%, rgba(176,3,27,.35), transparent 70%),
+    radial-gradient(60% 50% at 50% 0%, rgba(80,0,10,.5), transparent 70%),
+    #050305;
+}
+.horror-bg::before {
+  content: "";
+  position: fixed; inset: 0;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+  mix-blend-mode: overlay;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
